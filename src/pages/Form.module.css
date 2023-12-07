@@ -1,0 +1,28 @@
+.formcontainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.inputcolumn {
+    margin: 5px 2px;
+}
+
+.singleitem {
+    grid-column: span 3;
+}
+
+.submitbutton {
+    padding: 5px 10px;
+}
+
+.title {
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .formcontainer {
+        display: inline;
+    }
+
+}
