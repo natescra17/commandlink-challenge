@@ -1,4 +1,4 @@
-import { fields } from "../utils/field-set"
+import { fields } from "../data/field-set"
 
 export const getFieldSet = async () => {
 

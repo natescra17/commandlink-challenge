@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom";
+
 import { getFieldSet } from "../server/getFieldSet"
 import { sendFormData } from "../server/sendFormData"
 
 import { FormProvider, useForm } from 'react-hook-form'
+
+import { useDispatch } from "react-redux";
+import { setData } from "../store/application";
 
 import Card from "../components/Card"
 import Field from "../components/Field"
@@ -12,6 +17,8 @@ import classes from "./Form.module.css"
 export default function Form () {
 
     const methods = useForm()
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [fields, setFields] = useState([])
 
@@ -26,8 +33,14 @@ export default function Form () {
 
 
     const onSubmit = methods.handleSubmit(async (data) => {
+        // mock send to server
         await sendFormData(data)
+        // local store for next pages
+        dispatch(setData({ data }))
+        // clear form
         methods.reset()
+        // navigate to next page
+        navigate("/end");
     })
     
     const renderFields = (fieldsData) => {
