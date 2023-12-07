@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { getFieldSet } from "../server/getFieldSet"
 import { sendFormData } from "../server/sendFormData"
+import { handleFormData } from "../utils/handleFormData"
 
 import { FormProvider, useForm } from 'react-hook-form'
 
@@ -33,10 +34,11 @@ export default function Form () {
 
 
     const onSubmit = methods.handleSubmit(async (data) => {
+        const application = handleFormData(data, fields)
         // mock send to server
-        await sendFormData(data)
+        await sendFormData(application)
         // local store for next pages
-        dispatch(setData({ data }))
+        dispatch(setData({ data: application }))
         // clear form
         methods.reset()
         // navigate to next page
