@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react"
 import { getFieldSet } from "../server/getFieldSet"
+import { sendFormData } from "../server/sendFormData"
+
+import { FormProvider, useForm } from 'react-hook-form'
 
 import Card from "../components/Card"
 import Field from "../components/Field"
@@ -8,37 +11,25 @@ import classes from "./Form.module.css"
 
 export default function Form () {
 
+    const methods = useForm()
+
     const [fields, setFields] = useState([])
-    const [formData, setFormData] = useState([])
 
     useEffect(() => {
         async function fetchData() {
             const data = await getFieldSet();
             setFields(data);
-
-            
         }
 
         fetchData()
     }, [])
 
-    useEffect(() => {
 
-        console.log(fields)
-        fields.forEach(field => {
-            if (Array.isArray(field)) {
-                field.forEach((fld) => {
-                    setFormData(current => [...current, {id: fld.id, value: ""}])
-                })
-            } else {
-                setFormData(current => [...current, {id: field.id, value: ""}])
-                
-            }
-        })
-
-    }, [fields])
-
-
+    const onSubmit = methods.handleSubmit(async (data) => {
+        await sendFormData(data)
+        methods.reset()
+    })
+    
     const renderFields = (fieldsData) => {
         const results = []
         fieldsData.forEach(field => {
@@ -66,19 +57,20 @@ export default function Form () {
 
         return results;
     }
-
-
-    const onSubmitForm = () => {
-console.log("call")
-    }
     
     return (
         <Card>
             <h2 className={classes.title}>Application form</h2>
-            <form className={classes.formcontainer} onSubmit={onSubmitForm()}>
-                {renderFields(fields)}
-                <input type="submit" className={[classes.submitbutton, classes.singleitem].join(' ')} value="Send my application" onClick={onSubmitForm}/>
-            </form>
+            <FormProvider {...methods}>
+                <form
+                    className={classes.formcontainer}
+                    onSubmit={e => e.preventDefault()}
+                    noValidate
+                    autoComplete="off">
+                    {renderFields(fields)}
+                    <button className={[classes.submitbutton, classes.singleitem].join(' ')} onClick={onSubmit}>Send my application</button>
+                </form>
+            </FormProvider>
         </Card>
             
     )

@@ -1,8 +1,18 @@
 import classes from "./Field.module.css"
+import { useFormContext } from 'react-hook-form'
+import { findInputError } from '../utils/findInputErrors'
+import { isFormInvalid } from "../utils/isFormInvalid"
 
 export default function Field({inputField}) {
-    const { id, type, required, placeholder, className } = inputField
+    const { id, type, placeholder, validation } = inputField
 
+    const {
+        register,
+        formState: { errors },
+    } = useFormContext()
+
+    const inputErrors = findInputError(errors, id)
+    const isInvalid = isFormInvalid(inputErrors)
 
     const renderInputText = () => {
         return (
@@ -11,7 +21,7 @@ export default function Field({inputField}) {
                     id={id}
                     type={type}    
                     placeholder={placeholder||id||""}
-                    required={required||false}
+                    {...register(id, validation)}
                 />
         )
     }
@@ -19,7 +29,9 @@ export default function Field({inputField}) {
     const renderInputSelect = () => {
         const {options} = inputField
         return (
-            <select id={id}>
+            <select
+                id={id} 
+                {...register(id, validation)}>
                 {options.map((opt) => <option value={opt}>{opt}</option>)}
             </select>
         )
@@ -30,7 +42,21 @@ export default function Field({inputField}) {
             <label for={id} className={classes.label}>{placeholder||id}</label>
             {(type === "text" || type === "textarea") ? renderInputText() : null}
             {(type === "select") ? renderInputSelect() : null}
+            {isInvalid && (
+            <InputError
+              message={inputErrors.error.message}
+              key={inputErrors.error.message}
+            />
+          )}
         </div>
     )
 
 }
+
+const InputError = ({ message }) => {
+    return (
+      <p className={classes.error}>
+        {message}
+      </p>
+    )
+  }
