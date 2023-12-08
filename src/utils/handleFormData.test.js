@@ -59,7 +59,6 @@ const expectedResult = [[{name: "First name", value: "Jane"}, {name: "Last name"
 describe('Test handleFormData method', () => {
     it('Should create a correct array of data', () => {
         const result = handleFormData(dummyInputData, dummyFieldsData)
-        console.log(result)
         expect(result).to.deep.equal(expectedResult)
     })
 })

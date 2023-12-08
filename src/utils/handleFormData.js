@@ -19,7 +19,6 @@ export const handleFormData = (inputData, fieldsData) => {
         }
             
     })
-    console.log(applicationData)
 
     return applicationData
 
